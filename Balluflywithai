@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pixel Art Game</title>
+	<style>
+		body {
+			background-image: url("https://i.imgur.com/x1CEyJL.png");
+			background-size: cover;
+		}
+
+		#character {
+			position: absolute;
+			top: 500px;
+			left: 300px;
+			width: 50px;
+			height: 50px;
+			background-image: url("https://i.imgur.com/d4b4vD6.png");
+			background-size: cover;
+		}
+
+		.ball {
+			position: absolute;
+			top: -50px;
+			left: 0;
+			width: 50px;
+			height: 50px;
+			background-image: url("https://i.imgur.com/xhBFDJg.png");
+			background-size: cover;
+		}
+	</style>
+</head>
+<body>
+
+<div id="character"></div>
+
+<script>
+	var character = document.getElementById("character");
+	var balls = [];
+	var score = 0;
+
+	document.addEventListener("keydown", function(event) {
+		if (event.key === "ArrowLeft") {
+			moveLeft();
+		}
+		else if (event.key === "ArrowRight") {
+			moveRight();
+		}
+	});
+
+	function moveLeft() {
+		var leftPosition = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+		if (leftPosition > 0) {
+			character.style.left = leftPosition - 10 + "px";
+		}
+	}
+
+	function moveRight() {
+		var leftPosition = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+		if (leftPosition < window.innerWidth - 50) {
+			character.style.left = leftPosition + 10 + "px";
+		}
+	}
+
+	setInterval(function() {
+		var ball = document.createElement("div");
+		ball.classList.add("ball");
+		ball.style.left = Math.floor(Math.random() * window.innerWidth) + "px";
+		document.body.appendChild(ball);
+		balls.push(ball);
+
+		if (balls.length > 20) {
+			balls[0].remove();
+			balls.shift();
+		}
+
+		for (var i = 0; i < balls.length; i++) {
+			var ballTop = parseInt(window.getComputedStyle(balls[i]).getPropertyValue("top"));
+			balls[i].style.top = ballTop + 10 + "px";
+
+			if (ballTop > 600 && ballTop < 650) {
+				var ballLeft = parseInt(window.getComputedStyle(balls[i]).getPropertyValue("left"));
+				var characterLeft = parseInt(window.getComputedStyle(character).getPropertyValue("left"));
+				if (ballLeft > characterLeft && ballLeft < characterLeft + 50 || ballLeft + 50 > characterLeft && ballLeft + 50 < characterLeft + 50) {
+					balls[i].remove();
+					balls.splice(i, 1);
+					score++;
+				}
+			}
+		}
+
+	}, 500);
+</script>
+
+<div style="font-size: 24px; text-align: center; margin-top: 20px;">
+	Score: <span id="score">0</span>
+</div>
+
+</body>
+</html>
